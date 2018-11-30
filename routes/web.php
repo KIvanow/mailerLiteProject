@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('/subscribers', 'SubscribersController');
+Route::resource('/fields', 'FieldsController');
