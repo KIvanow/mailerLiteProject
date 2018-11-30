@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Subscribers;
 
 class SubscribersController extends Controller
 {
@@ -14,7 +15,7 @@ class SubscribersController extends Controller
     public function index()
     {
         //
-        print_r( "asdasdasd " );
+
     }
 
     /**
@@ -44,9 +45,30 @@ class SubscribersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(){
+
+    }
+
+    public function getAll(){
+        return response()->json( Subscribers::all() );
+    }
+
+    public function get(Request $request)
     {
-        //
+        if ($request->isMethod('get')) {
+            return response()->json(["error" => "Please access this endpoint with POST"]);
+        }
+        $subscriber = Subscribers::find( $request->input("id") );
+        if( $subscriber == null ){
+            return response()->json( ["error" => "Subscriber not found", "id"=>$request->input("id")] );
+        }
+
+        $fields = [];
+        foreach( $subscriber->fields as $field ){
+            array_push( $fields, $field );
+        }
+        $subscriber->fields = $fields;
+        return response()->json($subscriber);
     }
 
     /**

@@ -1,8 +1,10 @@
 <?php
 
 namespace App;
+use App\Fields;
 
 use Illuminate\Database\Eloquent\Model;
+// use App\Fields;
 
 class Subscribers extends Model
 {
@@ -13,4 +15,9 @@ class Subscribers extends Model
         "name",
         "state",
     ];
+
+    public function fields()
+    {
+        return $this->hasMany(Fields::class, "subscriber_id", "id");
+    }
 }
