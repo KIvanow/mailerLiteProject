@@ -19,67 +19,51 @@ class SubscribersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(){
-
+        if( count( Subscribers::where("email", $request->input( "email" ) )->get() ) ){
+            return response()->json( ["error" => "Subscriber with this email already exist" ] );
+        } else if( !filter_var( $request->input( "email" ), FILTER_VALIDATE_EMAIL ) ){
+            return response()->json( ["error" => "Invalid email" ] );
+        } else {
+            return Subscribers::create( $request->all() );
+        }
     }
 
     public function getAll(){
-        return response()->json( Subscribers::all() );
+        $subscribers = Subscribers::all();
+        if( $subscribers ){
+            return response()->json( $this->mergeSubscriberFields( $subscribers ) );
+        } else {
+            return response()->json( [] );
+        }
     }
 
-    public function get(Request $request)
+    public function get($id)
     {
-        if ($request->isMethod('get')) {
-            return response()->json(["error" => "Please access this endpoint with POST"]);
-        }
-        $subscriber = Subscribers::find( $request->input("id") );
+        $subscriber = Subscribers::find( $id );
         if( $subscriber == null ){
-            return response()->json( ["error" => "Subscriber not found", "id"=>$request->input("id")] );
+            return response()->json( null );
         }
-
-        $fields = [];
-        foreach( $subscriber->fields as $field ){
-            array_push( $fields, $field );
-        }
-        $subscriber->fields = $fields;
-        return response()->json($subscriber);
+        return response()->json( $this->mergeSubscriberFields( [$subscriber] ) );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    protected function mergeSubscriberFields( $subscribers ){
+        foreach( $subscribers as $subscriber ){
+            $fields = [];
+            foreach( $subscriber->fields as $field ){
+                array_push( $fields, $field );
+            }
+            $subscriber->fields = $fields;
+        }
+
+        return $subscribers;
     }
 
     /**
@@ -89,9 +73,16 @@ class SubscribersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function edit(Request $request, $id)
     {
-        //
+        // I could've used findOrFail and then a return the error with the message returned from the error thrown by it, but I prefer more human readable messages
+        $subscriber = Subscribers::find($id);
+        if( $subscriber ){
+            $subscriber->update($request->all());
+            return $subscriber;
+        } else {
+            return response()->json( ["error" => "No such user" ] );
+        }
     }
 
     /**
@@ -102,6 +93,12 @@ class SubscribersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $subscriber = Subscribers::find($id);
+        if( $subscriber ){
+            $subscriber->delete();
+            return 204;
+        } else {
+            return response()->json( [ "error" => "Subscriber does not exist" ] );
+        }
     }
 }
