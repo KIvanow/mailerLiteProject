@@ -19,5 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/subscribers/get/', "SubscribersController@get");
-Route::get('/subscribers/getAll/', "SubscribersController@getAll");
+Route::get('/subscribers', "SubscribersController@getAll");
+Route::get('subscribers/{id}', "SubscribersController@get");
+
+Route::post('subscribers', "SubscribersController@create");
+
+Route::put('subscribers/{id}', "SubscribersController@edit");
+
+Route::delete('subscribers/{id}', "SubscribersController@destroy");

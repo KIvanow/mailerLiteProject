@@ -18,7 +18,7 @@ class CreateFieldsTable extends Migration
             $table->increments('id');
             $table->integer('subscriber_id')->unsigned();
             $table->foreign('subscriber_id')
-            ->references('id')->on('subscribers');
+            ->references('id')->on('subscribers')->onDelete('cascade');
             $table->string("title");
             $table->enum("type", array(
                 "date",

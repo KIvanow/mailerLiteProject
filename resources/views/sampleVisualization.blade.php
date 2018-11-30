@@ -11,12 +11,14 @@
                 }
             });
                 $.ajax({
-                    type: "GET",
-                    url: "api/subscribers/getAll",
+                    type: "PUT",
+                    url: "api/subscribers/" + 2123,
                     // contentType: "application/json",
-                    dataType: "text",
+                    // dataType: "JSON",
                     data: {
-                        id: 1
+                        "email": "tester@mail.com",
+                        "name": "asdasdasd",
+                        // "state": "unconfirmed"
                     },
                     success: (response)=>{
                         console.log( response );
