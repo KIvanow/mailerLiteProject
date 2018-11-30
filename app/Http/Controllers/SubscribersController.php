@@ -26,16 +26,20 @@ class SubscribersController extends Controller
      */
     public function create(Request $request)
     {
-
-        if( count( Subscribers::where("email", $request->input( "email" ) )->get() ) ){
-            return response()->json( ["error" => "Subscriber with this email already exist" ] );
-        } else if( !filter_var( $request->input( "email" ), FILTER_VALIDATE_EMAIL ) ){
-            return response()->json( ["error" => "Invalid email" ] );
+        $subscriberValid = $this->validateSubscriber( $request->input("email" ) );
+        if( $subscriberValid["error"] ){
+            return $subscriberValid;
         } else {
             return Subscribers::create( $request->all() );
         }
+
     }
 
+    /**
+     * Returns json with all subscribers and their fields
+     *
+     * @return JSON
+     */
     public function getAll(){
         $subscribers = Subscribers::all();
         if( $subscribers ){
@@ -45,6 +49,12 @@ class SubscribersController extends Controller
         }
     }
 
+    /**
+     * Returns json with subscribers and his fields
+     *
+     * @param int $id
+     * @return JSON
+     */
     public function get($id)
     {
         $subscriber = Subscribers::find( $id );
@@ -53,6 +63,38 @@ class SubscribersController extends Controller
         }
         return response()->json( $this->mergeSubscriberFields( [$subscriber] ) );
     }
+
+    /**
+     * Check if subscriber is valid //used when creating and editting subscribers
+     *
+     * @param int $email
+     * @param boolean $withEmail
+     * @return error object || true
+     */
+    protected function validateSubscriber( $email, $withEmail = true ){
+        if( $withEmail && count( Subscribers::where("email", $email )->get() ) ){
+            return ["error" => "Subscriber with this email already exist" ];
+        }
+
+        if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ){
+            return ["error" => "Invalid email" ];
+        }
+
+        $domain = explode("@",$email )[1];
+
+        if( !$this->pingDomain( $domain ) ){
+            return ["error" => "Inactive domain" ];
+        }
+
+        return true;
+    }
+
+     /**
+     * Merge and return subscribers and their fields
+     *
+     * @param  array $subscribers
+     * @return array
+     */
 
     protected function mergeSubscriberFields( $subscribers ){
         foreach( $subscribers as $subscriber ){
@@ -64,6 +106,29 @@ class SubscribersController extends Controller
         }
 
         return $subscribers;
+    }
+
+     /**
+     * Check if the domain provided is active
+     *
+     * @param  string $domain
+     * @return boolean
+     */
+    protected function pingDomain( $domain ){
+        $ch = curl_init( $domain );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        $data = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if( $httpcode>=200 && $httpcode<300 ){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -78,8 +143,19 @@ class SubscribersController extends Controller
         // I could've used findOrFail and then a return the error with the message returned from the error thrown by it, but I prefer more human readable messages
         $subscriber = Subscribers::find($id);
         if( $subscriber ){
-            $subscriber->update($request->all());
-            return $subscriber;
+            if( $subscriber->email != $request->input( "email" ) ){
+                $subscriberValid = $this->validateSubscriber( $request->input( "email" ) );
+            } else {
+                $subscriberValid = $this->validateSubscriber( $request->input( "email" ), false ); //the subscriber email will exist, because its the same
+            }
+
+            if( $subscriberValid["error"] ){
+                return response()->json( $subscriberValid );
+            } else {
+                $subscriber->update($request->all());
+                return $subscriber;
+            }
+
         } else {
             return response()->json( ["error" => "No such user" ] );
         }
