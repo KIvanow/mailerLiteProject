@@ -11,15 +11,15 @@
                 }
             });
                 $.ajax({
-                    type: "POST",
-                    url: "api/subscribers",
+                    type: "DELETE",
+                    url: "api/fields/51",
                     // contentType: "application/json",
                     // dataType: "JSON",
-                    data: {
-                        "email": "tester@gmail.com",
-                        "name": "asdasdasd",
-                        // "state": "unconfirmed"
-                    },
+                    // data: {
+                    //     "title": "asdasjdsddasjhdi1231723",
+                    //     "type": "string",
+                    //     "subscriber_id": 4
+                    // },
                     success: (response)=>{
                         console.log( response );
                     },

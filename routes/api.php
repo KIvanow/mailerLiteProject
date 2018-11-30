@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Subscribers;
+use App\Fields;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,11 +20,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/subscribers', "SubscribersController@getAll");
+Route::get('subscribers', "SubscribersController@getAll");
 Route::get('subscribers/{id}', "SubscribersController@get");
-
 Route::post('subscribers', "SubscribersController@create");
-
 Route::put('subscribers/{id}', "SubscribersController@edit");
-
 Route::delete('subscribers/{id}', "SubscribersController@destroy");
+
+Route::get('fields/getSubscriberFields/{subscriber_id}', "FieldsController@getSubscriberFields");
+Route::get('fields/{id}', "FieldsController@get");
+Route::post('fields', "FieldsController@create");
+Route::put('fields/{id}', "FieldsController@edit");
+Route::delete('fields/{id}', "FieldsController@destroy");

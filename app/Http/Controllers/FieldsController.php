@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Subscribers;
+use App\Fields;
 
 class FieldsController extends Controller
 {
@@ -16,59 +18,102 @@ class FieldsController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
+     /**
+     * Return json with all fields for given subscriber
      *
-     * @return \Illuminate\Http\Response
+     * @param int $subscriber_id
+     * @return JSON
      */
-    public function create()
-    {
-        //
+    public function getSubscriberFields( $subscriber_id ){
+            $subscriber = Subscribers::find( $subscriber_id );
+            if( $subscriber ){
+                return Fields::where( "subscriber_id", $subscriber_id)->get();
+            }
+            return response()->json( ["error" => "Invalid subscriber id"] );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Return json with field
+     *
+     * @param int $id
+     * @return JSON
+     */
+    public function get($id)
+    {
+        return response()->json( Fields::find( $id ) );
+    }
+
+    /**
+     * Store a newly create resource in storage
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        if( !$request->title || !$request->type ){
+            return response()->json( ["error" => "Missing fields"] );
+        }
+
+        $fieldValid = $this->validateField( $request );
+        if( $fieldValid["error"] ){
+            return $fieldValid;
+        } else {
+            return Fields::create( $request->all() );
+        }
+
     }
 
     /**
-     * Display the specified resource.
+     * Check if field is valid //used when creating and editting field
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $email
+     * @return error object || true
      */
-    public function show($id)
-    {
-        //
+    protected function validateField( $request ){
+        if( !Subscribers::find( $request->input("subscriber_id") ) ){
+            return ["error" => "Invalid subscriber id"];
+        }
+
+        // var_dump( $request->input( "type" ) );
+        // var_dump( $request->input( "title" ) );
+        // var_dump( $request->input( "subscriber_id" ) );
+
+        $field = Fields::where( "type", "=", $request->input("type") )
+        ->where( "title", "=", $request->input("title") )
+        ->where( "subscriber_id", "=", $request->input("subscriber_id"))
+        ->get();
+
+        if( count( $field ) > 0 ){
+            return ["error"=> "Field already exists"];
+        }
+        return true;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function edit(Request $request, $id)
     {
-        //
+        $field = Fields::find($id);
+        if( $field ){
+            $fieldValid = $this->validateField( $request );
+
+            if( $fieldValid["error"] ){
+                return response()->json( $fieldValid );
+            } else {
+                $field->update($request->all());
+                return $field;
+            }
+
+        } else {
+            return response()->json( ["error" => "Invalid field" ] );
+        }
     }
 
     /**
@@ -79,6 +124,12 @@ class FieldsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $field = Fields::find($id);
+        if( $field ){
+            $field->delete();
+            return 204;
+        } else {
+            return response()->json( [ "error" => "Invalid field" ] );
+        }
     }
 }

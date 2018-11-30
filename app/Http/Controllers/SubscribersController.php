@@ -26,6 +26,10 @@ class SubscribersController extends Controller
      */
     public function create(Request $request)
     {
+        if( !$request->email || !$request->name ){
+            return response()->json( ["error" => "Missing fields"] );
+        }
+
         $subscriberValid = $this->validateSubscriber( $request->input("email" ) );
         if( $subscriberValid["error"] ){
             return $subscriberValid;
@@ -36,9 +40,9 @@ class SubscribersController extends Controller
     }
 
     /**
-     * Returns json with all subscribers and their fields
+     * Return json with all subscribers and their fields
      *
-     * @return JSON
+     * @return \Illuminate\Http\Response
      */
     public function getAll(){
         $subscribers = Subscribers::all();
@@ -50,10 +54,10 @@ class SubscribersController extends Controller
     }
 
     /**
-     * Returns json with subscribers and his fields
+     * Return json with subscribers and his fields
      *
      * @param int $id
-     * @return JSON
+     * @return \Illuminate\Http\Response
      */
     public function get($id)
     {
@@ -157,7 +161,7 @@ class SubscribersController extends Controller
             }
 
         } else {
-            return response()->json( ["error" => "No such user" ] );
+            return response()->json( ["error" => "Invalid subscriber" ] );
         }
     }
 
@@ -174,7 +178,7 @@ class SubscribersController extends Controller
             $subscriber->delete();
             return 204;
         } else {
-            return response()->json( [ "error" => "Subscriber does not exist" ] );
+            return response()->json( [ "error" => "Invalid subscriber" ] );
         }
     }
 }
