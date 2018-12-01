@@ -11,14 +11,16 @@
                 }
             });
                 $.ajax({
-                    type: "GET",
-                    url: "api/subscribers/51",
+                    type: "POST",
+                    url: "api/fields/",
                     // contentType: "application/json",
                     // dataType: "JSON",
-                    // data: {
-                    //     "name": "asdasjdasdsddasjhdi1231723",
-                    //     "email": "testtesttasdest@gmail.com",
-                    // },
+                    data: {
+                        "subscriber_id": 1,
+                        "type": "number",
+                        "value": 4,
+                        "title": "test"
+                    },
                     success: (response)=>{
                         console.log( response );
                     },

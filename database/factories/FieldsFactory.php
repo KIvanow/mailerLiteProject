@@ -24,24 +24,34 @@ $factory->define(App\Fields::class, function (Faker $faker, $data) {
         "boolean"
     ];
 
+    $typeIndex = $faker->numberBetween(0, 3);
+
     switch ($typeIndex) {
         case 0:
-            $title = $faker->dateTimeThisCentury->format('Y-m-d');
+            $title = "dateJoined";
+            $value = $faker->dateTimeThisCentury->format('Y-m-d');
             break;
         case 1:
-            $title = $faker->randomNumber();
+            $title = "subscribedTo";
+            $value = $faker->randomNumber();
             break;
         case 2:
-            $title = $faker->sentence();
+            $title = "userDescription";
+            $value = $faker->sentence();
             break;
         case 3:
-            $title = $faker->boolean($chanceOfGettingTrue = 50);
+            $title = "randomCheck";
+            $value = $faker->boolean($chanceOfGettingTrue = 50);
             break;
     }
 
+    $subscriberId = $faker->numberBetween(1, 50);
+
+
     return [
-        'type' => $types[ $typeIndex ],
-        'title' => $title,
-        "subscriber_id" => $subscriber_id
+        "type" => $types[ $typeIndex ],
+        "title" => $title,
+        "value" => $value,
+        "subscriber_id" => $subscriberId
     ];
 });

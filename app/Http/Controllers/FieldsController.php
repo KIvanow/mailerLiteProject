@@ -52,7 +52,7 @@ class FieldsController extends Controller
      */
     public function create(Request $request)
     {
-        if(!$request->title || !$request->type){
+        if(!$request->title || !$request->type || !$request->value){
             return response()->json(["error" => "Missing fields"]);
         }
 

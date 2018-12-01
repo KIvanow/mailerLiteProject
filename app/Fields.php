@@ -12,6 +12,7 @@ class Fields extends Model
     protected $fillable = [
         "title",
         "type",
+        "value",
         "subscriber_id",
     ];
 

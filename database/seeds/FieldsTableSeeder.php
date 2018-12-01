@@ -27,16 +27,20 @@ class FieldsTableSeeder extends Seeder
 
             switch ($typeIndex) {
                 case 0:
-                    $title = $faker->dateTimeThisCentury->format('Y-m-d');
+                    $title = "dateJoined";
+                    $value = $faker->dateTimeThisCentury->format('Y-m-d');
                     break;
                 case 1:
-                    $title = $faker->randomNumber();
+                    $title = "subscribedTo";
+                    $value = $faker->randomNumber();
                     break;
                 case 2:
-                    $title = $faker->sentence();
+                    $title = "userDescription";
+                    $value = $faker->sentence();
                     break;
                 case 3:
-                    $title = $faker->boolean($chanceOfGettingTrue = 50);
+                    $title = "randomCheck";
+                    $value = $faker->boolean($chanceOfGettingTrue = 50);
                     break;
             }
 
@@ -45,6 +49,7 @@ class FieldsTableSeeder extends Seeder
             Fields::create([
                 "type" => $types[ $typeIndex ],
                 "title" => $title,
+                "value" => $value,
                 "subscriber_id" => $subscriberId
             ]);
         }

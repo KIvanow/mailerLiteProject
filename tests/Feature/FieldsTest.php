@@ -17,10 +17,13 @@ class FieldsTest extends TestCase
             'subscriber_id' => $subscriber->id,
         ]);
 
-        $this->json('POST', 'api/fields', ["type" => $field->type, "title" => $field->title, "subscriber_id" => $field->subscriber_id ] )
+        $this->json('POST', 'api/fields',
+            ["type"=>$field->type, "value"=>$field->value, "title"=>$field->title, "subscriber_id"=>$field->subscriber_id]
+        )
             ->assertJsonStructure([
                 "title",
                 "type",
+                "value",
                 "id",
                 "subscriber_id"
             ]);
@@ -33,7 +36,7 @@ class FieldsTest extends TestCase
             'subscriber_id' => $subscriber->id,
         ]);
 
-        $this->json('POST', 'api/fields', ["type" => $field->type, "title" => $field->title, "subscriber_id" => $field->subscriber_id ])
+        $this->json('POST', 'api/fields', ["type" => $field->type, "value" => $field->value, "title" => $field->title, "subscriber_id" => $field->subscriber_id ])
             ->assertJsonStructure([
                 "error",
             ]);
@@ -74,6 +77,7 @@ class FieldsTest extends TestCase
         $this->json('GET', 'api/fields/' . $field->id)
             ->assertJsonStructure([
                 "title",
+                "value",
                 "type",
                 "subscriber_id",
             ]);

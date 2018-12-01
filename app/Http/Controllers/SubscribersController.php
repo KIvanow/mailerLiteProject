@@ -105,13 +105,25 @@ class SubscribersController extends Controller
     protected function mergeSubscriberFields($subscribers)
     {
         foreach($subscribers as $subscriber){
-            $fields = [];
             foreach($subscriber->fields as $field){
-                array_push($fields, $field);
-            }
-            $subscriber->fields = $fields;
-        }
+                $value = $field["value"];
+                switch ($field["type"]) {
+                    case 'boolean':
+                        $value = boolval( $value );
+                        break;
 
+                    case 'number':
+                        $value = intval( $value ); //or floatval depends on the use cases
+                        break;
+
+                    // case 'date':
+                    //     $value = strtotime($value); //potentionally convert to timestamp depending on the use cases
+                    //     break;
+                }
+
+                $subscriber[ $field["title"] ] = $value;
+            }
+        }
         return $subscribers;
     }
 

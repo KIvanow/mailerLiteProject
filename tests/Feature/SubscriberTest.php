@@ -56,7 +56,6 @@ class SubscriberCreateTest extends TestCase
                 "email",
                 "id",
                 "name",
-                "fields"
             ]);
     }
 
