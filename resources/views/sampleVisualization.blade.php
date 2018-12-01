@@ -11,14 +11,13 @@
                 }
             });
                 $.ajax({
-                    type: "DELETE",
-                    url: "api/fields/51",
+                    type: "GET",
+                    url: "api/subscribers/51",
                     // contentType: "application/json",
                     // dataType: "JSON",
                     // data: {
-                    //     "title": "asdasjdsddasjhdi1231723",
-                    //     "type": "string",
-                    //     "subscriber_id": 4
+                    //     "name": "asdasjdasdsddasjhdi1231723",
+                    //     "email": "testtesttasdest@gmail.com",
                     // },
                     success: (response)=>{
                         console.log( response );

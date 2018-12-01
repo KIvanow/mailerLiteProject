@@ -26,15 +26,15 @@ class SubscribersController extends Controller
      */
     public function create(Request $request)
     {
-        if( !$request->email || !$request->name ){
-            return response()->json( ["error" => "Missing fields"] );
+        if(!$request->email || !$request->name){
+            return response()->json(["error" => "Missing fields"]);
         }
 
-        $subscriberValid = $this->validateSubscriber( $request->input("email" ) );
-        if( $subscriberValid["error"] ){
+        $subscriberValid = $this->validateSubscriber($request->input("email"));
+        if($subscriberValid["error"]){
             return $subscriberValid;
         } else {
-            return Subscribers::create( $request->all() );
+            return Subscribers::create($request->all());
         }
 
     }
@@ -44,12 +44,13 @@ class SubscribersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll(){
+    public function getAll()
+    {
         $subscribers = Subscribers::all();
-        if( $subscribers ){
-            return response()->json( $this->mergeSubscriberFields( $subscribers ) );
+        if($subscribers){
+            return response()->json($this->mergeSubscriberFields($subscribers));
         } else {
-            return response()->json( [] );
+            return response()->json([]);
         }
     }
 
@@ -61,11 +62,11 @@ class SubscribersController extends Controller
      */
     public function get($id)
     {
-        $subscriber = Subscribers::find( $id );
-        if( $subscriber == null ){
-            return response()->json( null );
+        $subscriber = Subscribers::find($id);
+        if($subscriber == null){
+            return response()->json(null);
         }
-        return response()->json( $this->mergeSubscriberFields( [$subscriber] ) );
+        return response()->json($this->mergeSubscriberFields([$subscriber])[0]);
     }
 
     /**
@@ -75,18 +76,19 @@ class SubscribersController extends Controller
      * @param boolean $withEmail
      * @return error object || true
      */
-    protected function validateSubscriber( $email, $withEmail = true ){
-        if( $withEmail && count( Subscribers::where("email", $email )->get() ) ){
+    protected function validateSubscriber($email, $withEmail = true)
+    {
+        if($withEmail && count(Subscribers::where("email", $email)->get())){
             return ["error" => "Subscriber with this email already exist" ];
         }
 
-        if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ){
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             return ["error" => "Invalid email" ];
         }
 
-        $domain = explode("@",$email )[1];
+        $domain = explode("@",$email)[1];
 
-        if( !$this->pingDomain( $domain ) ){
+        if(!$this->pingDomain($domain)){
             return ["error" => "Inactive domain" ];
         }
 
@@ -100,11 +102,12 @@ class SubscribersController extends Controller
      * @return array
      */
 
-    protected function mergeSubscriberFields( $subscribers ){
-        foreach( $subscribers as $subscriber ){
+    protected function mergeSubscriberFields($subscribers)
+    {
+        foreach($subscribers as $subscriber){
             $fields = [];
-            foreach( $subscriber->fields as $field ){
-                array_push( $fields, $field );
+            foreach($subscriber->fields as $field){
+                array_push($fields, $field);
             }
             $subscriber->fields = $fields;
         }
@@ -118,17 +121,18 @@ class SubscribersController extends Controller
      * @param  string $domain
      * @return boolean
      */
-    protected function pingDomain( $domain ){
-        $ch = curl_init( $domain );
+    protected function pingDomain($domain)
+    {
+        $ch = curl_init($domain);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if( $httpcode>=200 && $httpcode<300 ){
+        if($httpcode>=200 && $httpcode<300){
             return true;
         } else {
             return false;
@@ -146,22 +150,22 @@ class SubscribersController extends Controller
     {
         // I could've used findOrFail and then a return the error with the message returned from the error thrown by it, but I prefer more human readable messages
         $subscriber = Subscribers::find($id);
-        if( $subscriber ){
-            if( $subscriber->email != $request->input( "email" ) ){
-                $subscriberValid = $this->validateSubscriber( $request->input( "email" ) );
+        if($subscriber){
+            if($subscriber->email != $request->input("email")){
+                $subscriberValid = $this->validateSubscriber($request->input("email"));
             } else {
-                $subscriberValid = $this->validateSubscriber( $request->input( "email" ), false ); //the subscriber email will exist, because its the same
+                $subscriberValid = $this->validateSubscriber($request->input("email"), false); //the subscriber email will exist, because its the same
             }
 
-            if( $subscriberValid["error"] ){
-                return response()->json( $subscriberValid );
+            if($subscriberValid["error"]){
+                return response()->json($subscriberValid);
             } else {
                 $subscriber->update($request->all());
                 return $subscriber;
             }
 
         } else {
-            return response()->json( ["error" => "Invalid subscriber" ] );
+            return response()->json(["error" => "Invalid subscriber" ]);
         }
     }
 
@@ -174,11 +178,11 @@ class SubscribersController extends Controller
     public function destroy($id)
     {
         $subscriber = Subscribers::find($id);
-        if( $subscriber ){
+        if($subscriber){
             $subscriber->delete();
             return 204;
         } else {
-            return response()->json( [ "error" => "Invalid subscriber" ] );
+            return response()->json([ "error" => "Invalid subscriber" ]);
         }
     }
 }

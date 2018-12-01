@@ -5,25 +5,6 @@ use App\Fields;
 
 class FieldsTableSeeder extends Seeder
 {
-    private $fieldsSeeds = [
-        [
-            "title" => "sample type string",
-            "type" => "string",
-            "subscriber_id" => 1
-        ],
-
-        [
-            "title" => false,
-            "type" => "boolean",
-            "subscriber_id" => 1
-        ],
-
-        [
-            "title" => 13,
-            "type" => "number",
-            "subscriber_id" => 2
-        ]
-    ];
     /**
      * Run the database seeds.
      *
@@ -42,7 +23,7 @@ class FieldsTableSeeder extends Seeder
         ];
 
         for ($i = 0; $i < 50; $i++) {
-            $typeIndex = $faker->numberBetween( 0, 3 );
+            $typeIndex = $faker->numberBetween(0, 3);
 
             switch ($typeIndex) {
                 case 0:
@@ -59,7 +40,7 @@ class FieldsTableSeeder extends Seeder
                     break;
             }
 
-            $subscriberId = $faker->numberBetween( 1, 50 );
+            $subscriberId = $faker->numberBetween(1, 50);
 
             Fields::create([
                 "type" => $types[ $typeIndex ],

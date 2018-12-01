@@ -15,7 +15,8 @@ class Fields extends Model
         "subscriber_id",
     ];
 
-    public function subscriber(){
+    public function subscriber()
+    {
         return $this->belongsTo(Subscribers::class)->onDelete('cascade');;
     }
 }
