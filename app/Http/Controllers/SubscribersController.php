@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
 use App\Subscribers;
 
 class SubscribersController extends Controller
@@ -26,17 +27,14 @@ class SubscribersController extends Controller
      */
     public function create(Request $request)
     {
-        if(!$request->email || !$request->name){
-            return response()->json(["error" => "Missing fields"]);
-        }
+        $request->validate([
+            'email' => 'required|unique:subscribers|max:255',
+            'name' => 'required'
+        ]);
 
-        $subscriberValid = $this->validateSubscriber($request->input("email"));
-        if($subscriberValid["error"]){
-            return $subscriberValid;
-        } else {
-            return Subscribers::create($request->all());
-        }
+        $this->validateSubscriber($request->input("email"));
 
+        return Subscribers::create($request->all());
     }
 
     /**
@@ -70,29 +68,32 @@ class SubscribersController extends Controller
     }
 
     /**
-     * Check if subscriber is valid //used when creating and editting subscribers
+     * Check if subscriber is valid and throw error if validation fails //used when creating and editting subscribers
      *
      * @param int $email
-     * @param boolean $withEmail
-     * @return error object || true
+     * @return void
      */
-    protected function validateSubscriber($email, $withEmail = true)
+    protected function validateSubscriber($email)
     {
         if($withEmail && count(Subscribers::where("email", $email)->get())){
-            return ["error" => "Subscriber with this email already exist" ];
+            $error = \Illuminate\Validation\ValidationException::withMessages(
+                ['description' => ['Subscriber with this email already exist']]
+            );
         }
 
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-            return ["error" => "Invalid email" ];
+            $error = \Illuminate\Validation\ValidationException::withMessages(
+                ['description' => ['Invalid email']]
+            );
+            throw $error;
         }
 
-        $domain = explode("@",$email)[1];
-
-        if(!$this->pingDomain($domain)){
-            return ["error" => "Inactive domain" ];
+        if(!$this->pingDomain(explode("@",$email)[1])){
+            $error = \Illuminate\Validation\ValidationException::withMessages(
+                ['description' => ['Invalid email domain']]
+            );
+            throw $error;
         }
-
-        return true;
     }
 
      /**
@@ -166,7 +167,7 @@ class SubscribersController extends Controller
             if($subscriber->email != $request->input("email")){
                 $subscriberValid = $this->validateSubscriber($request->input("email"));
             } else {
-                $subscriberValid = $this->validateSubscriber($request->input("email"), false); //the subscriber email will exist, because its the same
+                $subscriberValid = $this->validateSubscriber($request->input("email")); //the subscriber email will exist, because its the same
             }
 
             if($subscriberValid["error"]){
@@ -189,12 +190,17 @@ class SubscribersController extends Controller
      */
     public function destroy($id)
     {
+        Validator::make(
+            ["id"=>$id],
+            ['id' => 'required|exists:subscribers'],
+            [
+                'required' => 'The :attribute field is required.',
+                'exists' => 'There is no subscriber with this id.',
+            ]
+        )->validate();
+
         $subscriber = Subscribers::find($id);
-        if($subscriber){
-            $subscriber->delete();
-            return 204;
-        } else {
-            return response()->json([ "error" => "Invalid subscriber" ]);
-        }
+        $subscriber->delete();
+        return 204;
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateFieldsTable extends Migration
+class AddValueToFields extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class UpdateFieldsTable extends Migration
      */
     public function up()
     {
-        $this->down();
-
-        Schema::table('fields', function($table) {
-            $table->string('value');
+        Schema::table('fields', function(Blueprint $table) {
+            $table->string('value')->default('');
         });
     }
 

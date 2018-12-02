@@ -10,14 +10,14 @@ class Fields extends Model
 
 
     protected $fillable = [
+        "subscriber_id",
         "title",
         "type",
-        "value",
-        "subscriber_id",
+        "value"
     ];
 
     public function subscriber()
     {
-        return $this->belongsTo(Subscribers::class)->onDelete('cascade');;
+        return $this->belongsTo(Subscribers::class)->onDelete('cascade');
     }
 }

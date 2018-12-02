@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
+use App\Rules\UniqueField;
 use App\Subscribers;
 use App\Fields;
 
@@ -26,11 +28,16 @@ class FieldsController extends Controller
      */
     public function getSubscriberFields($subscriber_id)
     {
-            $subscriber = Subscribers::find($subscriber_id);
-            if($subscriber){
-                return Fields::where("subscriber_id", $subscriber_id)->get();
-            }
-            return response()->json(["error" => "Invalid subscriber id"]);
+        Validator::make(
+            ["subscriber_id"=>$subscriber_id],
+            ['subscriber_id' => 'required|exists:subscribers,id'],
+            [
+                'required' => 'The :attribute field is required.',
+                'exists' => 'There is no subscriber with this id.',
+            ]
+        )->validate();
+
+        return Fields::where("subscriber_id", $subscriber_id)->get();
     }
 
     /**
@@ -52,21 +59,22 @@ class FieldsController extends Controller
      */
     public function create(Request $request)
     {
-        if(!$request->title || !$request->type || !$request->value){
-            return response()->json(["error" => "Missing fields"]);
-        }
+        $request->validate(
+            [
+                'subscriber_id' => 'required|exists:subscribers,id',
+                'title' => 'required|max:255',
+                'value' => 'required|max:255',
+                'type' => ['required', 'max:255']
+            ],
+            [
+                'required' => 'The :attribute field is required.',
+                'exists' => 'There is no subscriber with this id.',
+            ]
+        );
 
-        if(!Subscribers::find($request->input("subscriber_id"))){
-            return ["error" => "Invalid subscriber id"];
-        }
+        $this->validateUniqueField($request);
 
-        $fieldValid = $this->validateField($request);
-        if($fieldValid["error"]){
-            return $fieldValid;
-        } else {
-            return Fields::create($request->all());
-        }
-
+        return Fields::create($request->all());
     }
 
     /**
@@ -75,7 +83,7 @@ class FieldsController extends Controller
      * @param int $email
      * @return error object || true
      */
-    protected function validateField($request)
+    protected function validateUniqueField($request)
     {
         $field = Fields::where("type", "=", $request->input("type"))
         ->where("title", "=", $request->input("title"))
@@ -83,9 +91,14 @@ class FieldsController extends Controller
         ->get();
 
         if(count($field) > 0){
-            return ["error"=> "Field already exists"];
+            $this->throwValidationError(['description' => ['This field already exists']]);
         }
-        return true;
+    }
+
+    protected function throwValidationError($message)
+    {
+        $error = \Illuminate\Validation\ValidationException::withMessages($message);
+        throw $error;
     }
 
     /**
@@ -97,23 +110,24 @@ class FieldsController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $field = Fields::find($id);
-        if($field){
-            $fieldValid = $this->validateField($request);
+        Validator::make(
+            ["id"=>$id],
+            ['id' => 'required|exists:fields'],
+            [
+                'required' => 'The :attribute field is required.',
+                'exists' => 'There is no field with this id.',
+            ]
+        )->validate();
 
-            if($request->subscriber_id && $field->subscriber_id == $request->subscriber_id){
-                return response()->json(["error" => "You can not change subscriber id of a field" ]);
-            }
+        $this->validateUniqueField($request);
 
-            if($fieldValid["error"]){
-                return response()->json($fieldValid);
-            }
-
-            $field->update($request->all());
-            return $field;
-        } else {
-            return response()->json(["error" => "Invalid field" ]);
+        if($request->subscriber_id && $field->subscriber_id == $request->subscriber_id){
+            $this->throwValidationError(["description" => ["You can not change subscriber id of a field"]]);
         }
+
+        $field->update($request->all());
+        return $field;
+
     }
 
     /**
@@ -124,12 +138,16 @@ class FieldsController extends Controller
      */
     public function destroy($id)
     {
-        $field = Fields::find($id);
-        if($field){
-            $field->delete();
-            return 204;
-        } else {
-            return response()->json([ "error" => "Invalid field" ]);
-        }
+        Validator::make(
+            ["id"=>$id],
+            ['id' => 'required|exists:fields'],
+            [
+                'required' => 'The :attribute field is required.',
+                'exists' => 'There is no field with this id.',
+            ]
+        )->validate();
+
+        $field->delete();
+        return 204;
     }
 }
