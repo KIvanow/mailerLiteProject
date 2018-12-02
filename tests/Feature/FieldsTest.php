@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use App\Subscribers;
 use App\Fields;
 
@@ -36,10 +37,8 @@ class FieldsTest extends TestCase
             'subscriber_id' => $subscriber->id,
         ]);
 
-        $this->json('POST', 'api/fields', ["type" => $field->type, "value" => $field->value, "title" => $field->title, "subscriber_id" => $field->subscriber_id ])
-            ->assertJsonStructure([
-                "error",
-            ]);
+        $response = $this->json('POST', 'api/fields', ["type" => $field->type, "value" => $field->value, "title" => $field->title, "subscriber_id" => $field->subscriber_id ]);
+        $response->assertStatus(422);
     }
 
     public function testRequiredFields()
@@ -47,24 +46,18 @@ class FieldsTest extends TestCase
         $subscriber = factory(Subscribers::class)->create();
         $payload = ["type" => "number", "subscriber_id" => $subscriber->id ];
 
-        $this->json('POST', 'api/fields', $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
+        $response = $this->json('POST', 'api/fields', $payload);
+        $response->assertStatus(422);
 
         $payload = ["subscriber_id" => $subscriber->id ];
 
-        $this->json('POST', 'api/fields', $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
+        $response = $this->json('POST', 'api/fields', $payload);
+        $response->assertStatus(422);
 
-        $payload = [ ];
+        $payload = [];
 
-        $this->json('POST', 'api/fields', $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
+        $response = $this->json('POST', 'api/fields', $payload);
+        $response->assertStatus(422);
     }
 
     public function testFieldGet()
@@ -116,10 +109,8 @@ class FieldsTest extends TestCase
         $faker = \Faker\Factory::create();
         $payload = ["title"=> $faker->unique()->randomNumber];
 
-        $this->json('PUT', 'api/fields/' . -1, $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
+        $response = $this->json('PUT', 'api/fields/' . -1, $payload);
+        $response->assertStatus(422);
     }
 
     public function testFieldDelete()
@@ -131,8 +122,5 @@ class FieldsTest extends TestCase
 
         $this->json("delete", 'api/fields/' . $field->id)
             ->assertOk();
-
-        $this->json("GET", "api/fields/" . $field->id )
-            ->assertSee(null);
     }
 }

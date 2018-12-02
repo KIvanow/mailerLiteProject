@@ -73,12 +73,13 @@ class SubscribersController extends Controller
      * @param int $email
      * @return void
      */
-    protected function validateSubscriber($email)
+    protected function validateSubscriber($email, $withEmail=true)
     {
         if($withEmail && count(Subscribers::where("email", $email)->get())){
             $error = \Illuminate\Validation\ValidationException::withMessages(
                 ['description' => ['Subscriber with this email already exist']]
             );
+            throw $error;
         }
 
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -167,7 +168,7 @@ class SubscribersController extends Controller
             if($subscriber->email != $request->input("email")){
                 $subscriberValid = $this->validateSubscriber($request->input("email"));
             } else {
-                $subscriberValid = $this->validateSubscriber($request->input("email")); //the subscriber email will exist, because its the same
+                $subscriberValid = $this->validateSubscriber($request->input("email"), false); //the subscriber email will exist, because its the same
             }
 
             if($subscriberValid["error"]){

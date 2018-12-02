@@ -11,16 +11,16 @@
                 }
             });
                 $.ajax({
-                    type: "POST",
-                    url: "api/fields/",
+                    type: "DELETE",
+                    url: "api/fields/4",
                     // contentType: "application/json",
                     // dataType: "JSON",
-                    data: {
-                        "subscriber_id": 1,
-                        "type": "number",
-                        "value": 4,
-                        "title": "test"
-                    },
+                    // data: {
+                    //     "subscriber_id": 1,
+                    //     "type": "number",
+                    //     "value": 4,
+                    //     "title": "test"
+                    // },
                     success: (response)=>{
                         console.log( response );
                     },

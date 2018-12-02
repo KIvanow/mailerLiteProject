@@ -14,10 +14,8 @@ class SubscriberCreateTest extends TestCase
         $faker = \Faker\Factory::create();
         $payload = ['email' => $faker->unique()->safeEmail];
 
-        $this->json('POST', 'api/subscribers', $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
+        $response = $this->json('POST', 'api/subscribers', $payload);
+        $response->assertStatus(422);
     }
 
     public function testCreatingNewSubscriber()
@@ -40,11 +38,8 @@ class SubscriberCreateTest extends TestCase
 
         $payload = ['email' => $subscriber->email, 'name' => $subscriber->name];
 
-        $this->json('POST', 'api/subscribers', $payload)
-            ->assertJsonStructure([
-                "error"
-            ]);
-
+        $response = $this->json('POST', 'api/subscribers', $payload);
+        $response->assertStatus(422);
     }
 
     public function testSubscriberGet()
@@ -78,10 +73,5 @@ class SubscriberCreateTest extends TestCase
 
         $this->json("delete", 'api/subscribers/' . $subscriber->id)
             ->assertOk();
-
-
-        $this->json("GET", "api/subscribers/" . $subscriber->id )
-            ->assertSee(null);
-
     }
 }

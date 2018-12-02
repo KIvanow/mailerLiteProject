@@ -125,6 +125,7 @@ class FieldsController extends Controller
             $this->throwValidationError(["description" => ["You can not change subscriber id of a field"]]);
         }
 
+        $field = Fields::find($id);
         $field->update($request->all());
         return $field;
 
@@ -146,8 +147,9 @@ class FieldsController extends Controller
                 'exists' => 'There is no field with this id.',
             ]
         )->validate();
+        return 422;
 
-        $field->delete();
+        Fields::find($id)->delete();
         return 204;
     }
 }
