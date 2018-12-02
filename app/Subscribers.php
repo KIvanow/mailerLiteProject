@@ -14,6 +14,7 @@ class Subscribers extends Model
         "email",
         "name",
         "state",
+        "user_id"
     ];
 
     public function fields()

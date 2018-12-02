@@ -13,6 +13,7 @@ class SubscribersTableSeeder extends Seeder {
             Subscribers::create([
                 'email' => $faker->email,
                 'name' => $faker->name,
+                'user_id' => $faker->numberBetween(1,2)
             ]);
         }
     }

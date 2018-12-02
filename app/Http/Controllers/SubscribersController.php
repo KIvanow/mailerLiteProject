@@ -29,6 +29,7 @@ class SubscribersController extends Controller
     {
         $request->validate([
             'email' => 'required|unique:subscribers|max:255',
+            'user_id' => 'required|exists:users,id',
             'name' => 'required'
         ]);
 

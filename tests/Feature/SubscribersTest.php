@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Subscribers;
+use App\User;
 
 class SubscriberCreateTest extends TestCase
 {
@@ -21,13 +22,15 @@ class SubscriberCreateTest extends TestCase
     public function testCreatingNewSubscriber()
     {
         $faker = \Faker\Factory::create();
-        $payload = ['email' => $faker->unique()->safeEmail, 'name' => 'testUser'];
+        $user = factory(User::class)->create();
+        $payload = ['email' => $faker->unique()->safeEmail, 'name' => 'testUser', 'user_id' => $user->id];
 
         $this->json('POST', 'api/subscribers', $payload)
             ->assertJsonStructure([
                 "email",
                 "id",
                 "name",
+                "user_id"
             ]);
 
     }
@@ -36,7 +39,7 @@ class SubscriberCreateTest extends TestCase
     {
         $subscriber = factory(Subscribers::class)->create();
 
-        $payload = ['email' => $subscriber->email, 'name' => $subscriber->name];
+        $payload = ['email' => $subscriber->email, 'name' => $subscriber->name, 'user_id' => $subscriber->user_id];
 
         $response = $this->json('POST', 'api/subscribers', $payload);
         $response->assertStatus(422);
@@ -51,6 +54,7 @@ class SubscriberCreateTest extends TestCase
                 "email",
                 "id",
                 "name",
+                "user_id"
             ]);
     }
 

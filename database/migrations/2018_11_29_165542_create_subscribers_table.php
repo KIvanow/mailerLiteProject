@@ -24,7 +24,7 @@ class CreateSubscribersTable extends Migration
                 "junk",
                 "bounced",
                 "unconfirmed"
-            ))->default( "unconfirmed");
+            ))->default("unconfirmed");
        });
     }
 

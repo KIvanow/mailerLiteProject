@@ -33,6 +33,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function fields()
+    {
+        return $this->hasMany(Subscribers::class, "user_id", "id");
+    }
+
     /**
     * @param string|array $roles
     */
