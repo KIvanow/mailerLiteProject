@@ -191,6 +191,20 @@ class SubscribersController extends Controller
      */
     public function destroy($id)
     {
+        $this->validateId($id);
+
+        $subscriber = Subscribers::find($id);
+        $subscriber->delete();
+        return 204;
+    }
+
+    /**
+     * Check if subscribers ID is valid and throw error if validation fails
+     *
+     * @param int $email
+     * @return void
+     */
+    protected function validateId($id){
         Validator::make(
             ["id"=>$id],
             ['id' => 'required|exists:subscribers'],
@@ -199,9 +213,60 @@ class SubscribersController extends Controller
                 'exists' => 'There is no subscriber with this id.',
             ]
         )->validate();
+    }
 
-        $subscriber = Subscribers::find($id);
-        $subscriber->delete();
-        return 204;
+    /**
+     * Shorthand API endpoint to update subscriber state to active.
+     *
+     * @param  int  $id
+     */
+    public function activate($id)
+    {
+        $this->validateId($id);
+        Subscribers::find($id)->update(["state"=>"active"]);
+    }
+
+    /**
+     * Shorthand API endpoint to update subscriber state to active.
+     *
+     * @param  int  $id
+     */
+    public function unsubscribe($id)
+    {
+        $this->validateId($id);
+        Subscribers::find($id)->update(["state"=>"unsubscribed"]);
+    }
+
+    /**
+     * Shorthand API endpoint to update subscriber state to active.
+     *
+     * @param  int  $id
+     */
+    public function junk($id)
+    {
+        $this->validateId($id);
+        Subscribers::find($id)->update(["state"=>"junk"]);
+    }
+
+    /**
+     * Shorthand API endpoint to update subscriber state to active.
+     *
+     * @param  int  $id
+     */
+    public function unconfirm($id)
+    {
+        $this->validateId($id);
+        Subscribers::find($id)->update(["state"=>"unconfirmed"]);
+    }
+
+    /**
+     * Shorthand API endpoint to update subscriber state to active.
+     *
+     * @param  int  $id
+     */
+    public function bounce($id)
+    {
+        $this->validateId($id);
+        Subscribers::find($id)->update(["state"=>"bounced"]);
     }
 }

@@ -11,8 +11,8 @@
                 }
             });
                 $.ajax({
-                    type: "DELETE",
-                    url: "api/fields/4",
+                    type: "GET",
+                    url: "api/subscribers/activate/-4",
                     // contentType: "application/json",
                     // dataType: "JSON",
                     // data: {

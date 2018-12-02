@@ -22,6 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('subscribers', "SubscribersController@getAll");
 Route::get('subscribers/{id}', "SubscribersController@get");
+Route::get('subscribers/activate/{id}', "SubscribersController@activate");
+Route::get('subscribers/unsubscribe/{id}', "SubscribersController@unsubscribe");
+Route::get('subscribers/junk/{id}', "SubscribersController@junk");
+Route::get('subscribers/unconfirm/{id}', "SubscribersController@unconfirm");
+Route::get('subscribers/bounce/{id}', "SubscribersController@bounce");
 Route::post('subscribers', "SubscribersController@create");
 Route::put('subscribers/{id}', "SubscribersController@edit");
 Route::delete('subscribers/{id}', "SubscribersController@destroy");
