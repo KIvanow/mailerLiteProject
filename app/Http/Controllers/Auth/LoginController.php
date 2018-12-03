@@ -41,14 +41,14 @@ class LoginController extends Controller
 
     protected function authenticated($request, $user)
     {
-        $isAdmin = count(
-            array_filter(Auth::user()->roles->toArray(), function($v, $k) {
-                return $v["name"] == "admin";
-            }, ARRAY_FILTER_USE_BOTH)
-            ) == 1;
-        if($isAdmin) {
-            return redirect()->intended('/admin');
-        }
+        // $isAdmin = count(
+        //     array_filter(Auth::user()->roles->toArray(), function($v, $k) {
+        //         return $v["name"] == "admin";
+        //     }, ARRAY_FILTER_USE_BOTH)
+        //     ) == 1;
+        // if($isAdmin) {
+        //     return redirect()->intended('/home');
+        // }
 
         return redirect()->intended('/home');
     }
