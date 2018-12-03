@@ -1,69 +1,355 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Backend developer task for mailer lite
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Small test app for Mailer Lite [![N|Solid](https://app.mailerlite.com/assets/images/favicons/favicon-32x32.png)](https://www.mailerlite.com/)
 
-## About Laravel
+Original requirement can be found here [here](https://gist.github.com/justinasposiunas/52f3c130c969834373dceae54d6b06fd)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+### Preinstall
+    This app is based on the laravel framework. It has the same requirements as [it](https://laravel.com/docs/5.7/installation#server-requirements)
+    Configure your db connection in .env
+    
+### Installation
+```sh
+$git clone https://github.com/KIvanow/mailerLiteProject.git
+$cd mailerLiteProject
+$php artisan migrate
+$php artisan db:seed
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Running it
+To simply run it:
+```sh
+$php artisan serve
+```
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+To rebuild js/css and run it:
+```sh
+$npm run dev; php artisan serve
+```
+Then open http://localhost:8000 to see it in action
 
-## Learning Laravel
+### Running the tests
+```sh
+$composer test
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
-
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### API endpoints
+**Get Subscriber**
+----
+  Returns json data about a single subscriber.
+* **URL**
+  api/subscribers/:id
+* **Method:**
+  `GET`
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Data Params**
+  None
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** `{ id : 12, name : "Michael Bloom", email: "michaelbloom@gmail.com", "fields": array[], "user_id" }`
+* **Error Response:**
+  * **Code:** 422 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/subscribers/1",
+      dataType: "json",
+      type : "GET",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Get All Subscribers**
+----
+  Returns json data about all subscribers.
+* **URL**
+  api/subscribers/
+* **Method:**
+  `GET`
+* **Data Params**
+  None
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** `{ id : 12, name : "Michael Bloom", email: "michaelbloom@gmail.com", "fields": array[], "user_id" }`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/subscribers",
+      dataType: "json",
+      type : "GET",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+**Edit Subscriber**
+----
+  Returns json data about all subscribers.
+* **URL**
+  api/subscribers/:id
+* **Method:**
+  `PUT`
+* **Data Params**
+  object with values to be changed
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** `[{ id : 12, name : "Michael Bloom", email: "michaelbloom@gmail.com", "fields": array[], "user_id" }]`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/subscribers",
+      dataType: "json",
+      type : "PUT",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Create Subscriber**
+----
+  Create entry about new subscriber
+* **URL**
+  api/subscribers/
+* **Method:**
+  `POST`
+* **Data Params**
+  email, name, user_id
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** `{ id : 12, name : "Michael Bloom", email: "michaelbloom@gmail.com", "fields": array[], "user_id" }`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/subscribers",
+      dataType: "json",
+      data: {
+          name: "Michael Bloom",
+          email: "michaelbloom@gmail.com",
+          user_id: 1
+      }
+      type : "POST",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Delete Subscriber**
+----
+  Delete the entry about the given subscriber
+* **URL**
+  api/subscribers/:id
+* **Method:**
+  `DELETE`
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Data Params**
+  None
+* **Success Response:**
+  * **Code:** 200
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/subscribers/1",
+      dataType: "json",
+      type : "DELETE",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Get Field**
+----
+  Returns json data about a single field.
+* **URL**
+  api/fields/:id
+* **Method:**
+  `GET`
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Data Params**
+  None
+**Content:** `{ id : 12, title : "joinedAt", value: "1983-05-25", "type": "date", "subscriber_id": 1 }`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/fields/1",
+      dataType: "json",
+      type : "GET",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Get Subscribers Fields**
+----
+  Returns json array with the fields of a given user.
+* **URL**
+  api/fields/getSubscriberFields/:subscriber_id
+* **Method:**
+  `GET`
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Data Params**
+  None
+**Content:** `[{ id : 12, title : "joinedAt", value: "1983-05-25", "type": "date", "subscriber_id": 1 }...]`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/fields/getSubscriberFields/1",
+      dataType: "json",
+      type : "GET",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Create Field**
+----
+  Create new field entry
+* **URL**
+  api/fields/
+* **Method:**
+  `POST`
+* **Data Params**
+  `title, value, type, subscriber_id`
+**Content:** `[{ id : 12, title : "joinedAt", value: "1983-05-25", "type": "date", "subscriber_id": 1 }...]`
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/fields/1",
+      dataType: "json",
+      data{
+          title: "joinedAt",
+          value: "1983-05-25",
+          type: "date",
+          "subscriber_id": 1
+      }
+      type : "POST",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+ 
+**Edit Field**
+----
+  Edit the entry for a given field
+* **URL**
+  api/fields/:id
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Method:**
+  `PUT`
+* **Data Params**
+  `title, value, type, subscriber_id`
+**Content:** `[{ id : 12, title : "joinedAt", value: "1983-05-30", "type": "date", "subscriber_id": 1 }...]`
+* **Error Response:**
+  * **Code:** 422 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/fields/getSubscriberFields/1",
+      dataType: "json",
+      data{
+          title: "joinedAt",
+          value: "1983-05-30",
+          type: "date",
+          "subscriber_id": 1
+      }
+      type : "PUT",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Delete Field**
+----
+  Delete the given field entry
+* **URL**
+  api/fields/:id
+*  **URL Params**
+   **Required:**
+   `id=[integer]`
+* **Method:**
+  `DELETE`
+* **Data Params**
+  NONE
+**Content:** 
+    * **Code:** 200
+* **Error Response:**
+  * **Code:** 422 (Unprocessable Entity) <br />
+    **Content:** `errors: { additional errors for every field },
+        message: "The given data was invalid."`
+* **Sample Call:**
+  ```javascript
+    $.ajax({
+      url: "/fields/1",
+      dataType: "json",
+      type : "DELETE",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+  ```
+  
+**Shorthand API endpoints**
+    Simillar to PUT request request with changed state of the subscriber
+    * **subscribers/activate/:id
+    * **subscribers/unsubscribe/:id
+    * **subscribers/junk/:id
+    * **subscribers/unconfirm/:id
+    * **subscribers/bounce/:id
+    
+### Todos
+ - Add tests for the shorthand user status change API
+ - Add Subscriber edtting form to show the way fields can be editted
+ - Convert the simple js rendering of the tables to vue.js with thread to make asynchronous updates
+ - Better authentication on requests
+ - Tests for the UI
