@@ -33,6 +33,10 @@ Then open http://localhost:8000 to see it in action
 $composer test
 ```
 
+### Seeded users
+user@example.com / password -> to see the regular user view
+admin@example.com / password -> to see the admin view
+
 ### API endpoints
 **Get Subscriber**
 ----
@@ -341,11 +345,11 @@ $composer test
   
 **Shorthand API endpoints**
     Simillar to PUT request request with changed state of the subscriber
-    * **subscribers/activate/:id
-    * **subscribers/unsubscribe/:id
-    * **subscribers/junk/:id
-    * **subscribers/unconfirm/:id
-    * **subscribers/bounce/:id
+    subscribers/activate/:id
+    subscribers/unsubscribe/:id
+    subscribers/junk/:id
+    subscribers/unconfirm/:id
+    subscribers/bounce/:id
     
 ### Todos
  - Add tests for the shorthand user status change API
