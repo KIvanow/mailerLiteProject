@@ -34,8 +34,8 @@ $composer test
 ```
 
 ### Seeded users
-user@example.com / password -> to see the regular user view
-admin@example.com / password -> to see the admin view
+user@example.com / password -> to see the regular user view<br/>
+admin@example.com / password -> to see the admin view<br/>
 
 ### API endpoints
 **Get Subscriber**
@@ -345,11 +345,11 @@ admin@example.com / password -> to see the admin view
   
 **Shorthand API endpoints**
     Simillar to PUT request request with changed state of the subscriber
-    subscribers/activate/:id
-    subscribers/unsubscribe/:id
-    subscribers/junk/:id
-    subscribers/unconfirm/:id
-    subscribers/bounce/:id
+    subscribers/activate/:id <br/>
+    subscribers/unsubscribe/:id <br/>
+    subscribers/junk/:id <br/>
+    subscribers/unconfirm/:id <br/> 
+    subscribers/bounce/:id <br/>
     
 ### Todos
  - Add tests for the shorthand user status change API
