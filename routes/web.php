@@ -27,5 +27,4 @@ Route::resource('/fields', 'FieldsController');
 Route::resource('/sample', 'SampleVisualizationController');
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');

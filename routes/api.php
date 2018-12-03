@@ -36,3 +36,14 @@ Route::get('fields/{id}', "FieldsController@get");
 Route::post('fields', "FieldsController@create");
 Route::put('fields/{id}', "FieldsController@edit");
 Route::delete('fields/{id}', "FieldsController@destroy");
+
+Route::get('auth/logout', 'Auth\AuthController@logout');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('register', 'Auth\RegisterController@register');
+Route::get('user/{id}', "UsersController@get");
+Route::get('users', "UsersController@getAll");
+// Route::middleware('auth:api')
+//     ->get('user/{id}', function (Request $request) {
+//         var_dump( $request->user );
+//         return $request->user();
+//     });

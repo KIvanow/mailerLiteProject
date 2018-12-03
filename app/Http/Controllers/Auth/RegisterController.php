@@ -79,4 +79,11 @@ class RegisterController extends Controller
             ->attach(Role::where('name', 'regular')->first());
         return $user;
     }
+
+    protected function registered(Request $request, $user)
+    {
+        $user->generateToken();
+
+        return response()->json(['data' => $user->toArray()], 201);
+    }
 }

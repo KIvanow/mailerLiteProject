@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -35,5 +37,34 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function authenticated($request, $user)
+    {
+        $isAdmin = count(
+            array_filter(Auth::user()->roles->toArray(), function($v, $k) {
+                return $v["name"] == "admin";
+            }, ARRAY_FILTER_USE_BOTH)
+            ) == 1;
+        if($isAdmin) {
+            return redirect()->intended('/admin');
+        }
+
+        return redirect()->intended('/home');
+    }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            $user->api_token = null;
+            $user->save();
+        }
+
+        // $this->auth->logout();
+        \Session::flush();
+        return redirect('/');
+        // return response()->json(['data' => 'User logged out.'], 200);
     }
 }

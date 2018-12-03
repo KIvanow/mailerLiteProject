@@ -9,9 +9,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Your Subscribers</div>
+                <div class="card-header">All Subscribers</div>
 
-                <table id="subscriberTable">
+                <table id="adminSubscriberTable">
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
@@ -28,6 +28,6 @@
 
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', ()=>{
-        displayUserSubscribers({!! Auth::user()->id !!});
+        displayAllSubscribers({!! Auth::user()->id !!});
     }, false);
 </script>

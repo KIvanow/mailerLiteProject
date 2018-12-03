@@ -33,7 +33,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function fields()
+
+    public function subscribers()
     {
         return $this->hasMany(Subscribers::class, "user_id", "id");
     }

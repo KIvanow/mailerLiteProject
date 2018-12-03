@@ -23,15 +23,19 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['regular', 'admin']);
-        return view('home');
+        if( $request->user()->hasRole("admin") ){
+            return $this->admin($request);
+        } else {
+            $request->user()->authorizeRoles(['regular', 'admin']);
+            return view('home');
+        }
     }
 
-    /*
-    public function someAdminStuff(Request $request)
+
+    public function admin(Request $request)
     {
-        $request->user()->authorizeRoles('manager');
-        return view(‘some.view’);
+        $request->user()->authorizeRoles('admin');
+        return view('admin');
     }
-    */
+
 }

@@ -12,3 +12,34 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+table {
+    margin: 10px 25px;
+}
+
+table td{
+    padding-bottom:20px;
+}
+
+.alignCenter{
+    text-align: center;
+}
+
+table th,
+table .deleteSubscriber{
+    cursor: pointer;
+}
+
+table .deleteSubscriber{
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+#addSubscriberForm{
+    margin-top: 25px;
+}
+
+#addSubscriberForm form{
+    margin: 25px;
+}
